@@ -1,0 +1,14 @@
+{
+  "name": "uoapi",
+  "version": "1.0.0",
+  "description": "A project for scraping data of the uOttawa public course registry",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Raman Gupta",
+  "license": "ISC",
+  "dependencies": {
+    "puppeteer": "^21.6.1"
+  }
+}
