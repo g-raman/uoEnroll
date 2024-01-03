@@ -44,7 +44,7 @@ const url =
 
   await page.waitForSelector(".SSSTEXTBLUE");
 
-  const titles = await page.evaluate(() => {
+  const results = await page.evaluate(() => {
     const table = document.getElementById("ACE_$ICField$4$$0");
     const courses = Array.from(
       table.querySelectorAll(
@@ -65,18 +65,33 @@ const url =
         courseCode = courseCode.trim().replaceAll(" ", "");
         courseName = courseName.trim();
 
-        currentCourseObj = { courseName, courseCode };
+        currentCourseObj = { courseName, courseCode, components: [] };
       } else {
         const courseData = Array.from(
           el.querySelectorAll(".PSLEVEL3GRIDODDROW"),
         );
+        const sectionData = courseData[1].innerText;
+        const [componentInfo, sessionType] = sectionData.split("\n");
+        const [section, component] = componentInfo.split("-");
 
-        currentCourseObj.timings = courseData[2].innerText;
-        currentCourseObj.instructor = courseData[3].innerText;
-        currentCourseObj.dates = courseData[4].innerText;
         const statusImage = courseData[5].querySelector("img").src;
         const status = statusImage.match(/CLOSED/) || statusImage.match(/OPEN/);
-        currentCourseObj.status = status[0];
+        const componentObj = {
+          section,
+          component,
+          timings: courseData[2].innerText,
+          instructor: courseData[3].innerText,
+          dates: courseData[4].innerText,
+          status: status[0],
+        };
+
+        const sectionRegex = /^[A-Z]0[1-9]|[A-Z]1[0-9]$/;
+        if (sectionRegex.test(section)) {
+          currentCourseObj.components.push(componentObj);
+        } else {
+          currentCourseObj = { ...currentCourseObj, ...componentObj };
+          console.log(currentCourseObj);
+        }
       }
     });
 
@@ -84,7 +99,7 @@ const url =
     return results;
   });
 
-  console.log(titles);
+  console.log(results);
 })();
 
 // Course object
