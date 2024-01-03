@@ -44,7 +44,7 @@ const url =
 
   await page.waitForSelector(".SSSTEXTBLUE");
 
-  const results = await page.evaluate(() => {
+  const data = await page.evaluate(() => {
     const table = document.getElementById("ACE_$ICField$4$$0");
     const courses = Array.from(
       table.querySelectorAll(
@@ -53,53 +53,76 @@ const url =
     );
     const results = [];
     let currentCourseObj = {};
+    let currentSectionObj = {};
 
-    const all = courses.forEach((el, index) => {
-      if (el.className.match(/PAGROUPBOXLABELLEVEL1/)) {
+    const cond = courses.length;
+    for (let index = 0; index < cond; index += 1) {
+      const el = courses[index];
+      const newCourseRegex = /PAGROUPBOXLABELLEVEL1/;
+      const shouldCreateNewClass = newCourseRegex.test(el.className);
+
+      if (shouldCreateNewClass) {
         if (!(index === 0)) {
           results.push(currentCourseObj);
         }
 
-        const section = el.innerText.trim();
-        let [courseCode, courseName] = section.split("-");
-        courseCode = courseCode.trim().replaceAll(" ", "");
+        const courseInfo = el.innerText;
+        let [courseCode, courseName] = courseInfo.split("-");
+        courseCode = courseCode.replaceAll(" ", "");
         courseName = courseName.trim();
 
-        currentCourseObj = { courseName, courseCode, components: [] };
+        currentCourseObj = { courseName, courseCode, sections: [] };
+        currentSectionObj = { components: [] };
       } else {
         const courseData = Array.from(
           el.querySelectorAll(".PSLEVEL3GRIDODDROW"),
         );
+
         const sectionData = courseData[1].innerText;
         const [componentInfo, sessionType] = sectionData.split("\n");
-        const [section, component] = componentInfo.split("-");
+        const [section, componentType] = componentInfo.split("-");
 
         const statusImage = courseData[5].querySelector("img").src;
         const status = statusImage.match(/CLOSED/) || statusImage.match(/OPEN/);
         const componentObj = {
           section,
-          component,
+          componentType,
           timings: courseData[2].innerText,
           instructor: courseData[3].innerText,
           dates: courseData[4].innerText,
           status: status[0],
         };
 
-        const sectionRegex = /^[A-Z]0[1-9]|[A-Z]1[0-9]$/;
-        if (sectionRegex.test(section)) {
-          currentCourseObj.components.push(componentObj);
+        const sectionRegex = /[A-Z]00/;
+        if (index === 1) {
+          currentSectionObj.section = section;
+        }
+
+        if (
+          index < cond - 1 &&
+          newCourseRegex.test(courses[index + 1].className)
+        ) {
+          currentCourseObj.sections.push(currentSectionObj);
+        }
+
+        if (sectionRegex.test(section) && index !== 1) {
+          currentCourseObj.sections.push(currentSectionObj);
+          currentSectionObj = { section, components: [] };
+          currentSectionObj.components.push(componentObj);
         } else {
-          currentCourseObj = { ...currentCourseObj, ...componentObj };
-          console.log(currentCourseObj);
+          currentSectionObj.components.push(componentObj);
+        }
+
+        if (index === cond - 1) {
+          currentCourseObj.sections.push(currentSectionObj);
+          results.push(currentCourseObj);
         }
       }
-    });
+    }
 
     console.log(results);
     return results;
   });
 
-  console.log(results);
+  console.log(data);
 })();
-
-// Course object
