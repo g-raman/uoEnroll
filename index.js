@@ -63,10 +63,6 @@ const url =
       const shouldCreateNewClass = newCourseRegex.test(el.className);
 
       if (shouldCreateNewClass) {
-        if (!(index === 0)) {
-          results.push(currentCourseObj);
-        }
-
         const courseInfo = el.innerText;
         let [courseCode, courseName] = courseInfo.split("-");
         courseCode = courseCode.replaceAll(" ", "");
@@ -74,6 +70,7 @@ const url =
 
         currentCourseObj = { courseName, courseCode, sections: [] };
         currentSectionObj = { components: [] };
+        newCourseCreated = true;
       } else {
         const courseData = Array.from(
           el.querySelectorAll(".PSLEVEL3GRIDODDROW"),
@@ -100,11 +97,9 @@ const url =
         }
 
         if (sectionRegex.test(section) && !newCourseCreated) {
-          console.log("here 2", currentSectionObj);
           currentCourseObj.sections.push(currentSectionObj);
           currentSectionObj = { section, components: [] };
           currentSectionObj.components.push(componentObj);
-          console.log("here 3", currentSectionObj);
         } else {
           currentSectionObj.components.push(componentObj);
           newCourseCreated = false;
@@ -114,9 +109,8 @@ const url =
           index < cond - 1 &&
           newCourseRegex.test(courses[index + 1].className)
         ) {
-          console.log("here 1", currentSectionObj);
           currentCourseObj.sections.push(currentSectionObj);
-          newCourseCreated = true;
+          results.push(currentCourseObj);
         }
 
         if (index === cond - 1) {
