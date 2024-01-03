@@ -54,6 +54,7 @@ const url =
     const results = [];
     let currentCourseObj = {};
     let currentSectionObj = {};
+    let newCourseCreated = true;
 
     const cond = courses.length;
     for (let index = 0; index < cond; index += 1) {
@@ -94,23 +95,28 @@ const url =
         };
 
         const sectionRegex = /[A-Z]00/;
-        if (index === 1) {
+        if (newCourseCreated) {
           currentSectionObj.section = section;
+        }
+
+        if (sectionRegex.test(section) && !newCourseCreated) {
+          console.log("here 2", currentSectionObj);
+          currentCourseObj.sections.push(currentSectionObj);
+          currentSectionObj = { section, components: [] };
+          currentSectionObj.components.push(componentObj);
+          console.log("here 3", currentSectionObj);
+        } else {
+          currentSectionObj.components.push(componentObj);
+          newCourseCreated = false;
         }
 
         if (
           index < cond - 1 &&
           newCourseRegex.test(courses[index + 1].className)
         ) {
+          console.log("here 1", currentSectionObj);
           currentCourseObj.sections.push(currentSectionObj);
-        }
-
-        if (sectionRegex.test(section) && index !== 1) {
-          currentCourseObj.sections.push(currentSectionObj);
-          currentSectionObj = { section, components: [] };
-          currentSectionObj.components.push(componentObj);
-        } else {
-          currentSectionObj.components.push(componentObj);
+          newCourseCreated = true;
         }
 
         if (index === cond - 1) {
