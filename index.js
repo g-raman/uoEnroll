@@ -26,6 +26,11 @@ const url =
     );
     filterSelector.value = "G";
 
+    const showClosedCourseSelector = document.getElementById(
+      "SSR_CLSRCH_WRK_SSR_OPEN_ONLY$chk$0",
+    );
+    showClosedCourseSelector.value = "N";
+
     const firstYearSelector = document.getElementById(
       "UO_PUB_SRCH_WRK_SSR_RPTCK_OPT_01$chk$0",
     );
@@ -64,6 +69,9 @@ const url =
         currentCourseObj.timings = courseData[2].innerText;
         currentCourseObj.instructor = courseData[3].innerText;
         currentCourseObj.dates = courseData[4].innerText;
+        const statusImage = courseData[5].querySelector("img").src;
+        const status = statusImage.match(/CLOSED/) || statusImage.match(/OPEN/);
+        currentCourseObj.status = status[0];
       }
     });
 
