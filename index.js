@@ -14,7 +14,7 @@ const url =
     const courseSubjectField = document.getElementById(
       "SSR_CLSRCH_WRK_SUBJECT$0",
     );
-    courseSubjectField.value = "ADM";
+    courseSubjectField.value = "ITI";
 
     const courseCodeField = document.getElementById(
       "SSR_CLSRCH_WRK_CATALOG_NBR$0",
@@ -59,13 +59,18 @@ const url =
         if (!(index === 0)) {
           results.push(currentCourseObj);
         }
-        currentCourseObj = { name: el.innerText };
+
+        const section = el.innerText.trim();
+        let [courseCode, courseName] = section.split("-");
+        courseCode = courseCode.trim().replaceAll(" ", "");
+        courseName = courseName.trim();
+
+        currentCourseObj = { courseName, courseCode };
       } else {
         const courseData = Array.from(
           el.querySelectorAll(".PSLEVEL3GRIDODDROW"),
         );
 
-        currentCourseObj.section = courseData[1].innerText;
         currentCourseObj.timings = courseData[2].innerText;
         currentCourseObj.instructor = courseData[3].innerText;
         currentCourseObj.dates = courseData[4].innerText;
