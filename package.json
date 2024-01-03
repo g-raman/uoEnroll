@@ -4,7 +4,7 @@
   "description": "A project for scraping data of the uOttawa public course registry",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "nodemon index.js"
   },
   "author": "Raman Gupta",
   "license": "ISC",
