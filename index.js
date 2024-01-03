@@ -55,6 +55,15 @@ const url =
           results.push(currentCourseObj);
         }
         currentCourseObj = { name: el.innerText };
+      } else {
+        const courseData = Array.from(
+          el.querySelectorAll(".PSLEVEL3GRIDODDROW"),
+        );
+
+        currentCourseObj.section = courseData[1].innerText;
+        currentCourseObj.timings = courseData[2].innerText;
+        currentCourseObj.instructor = courseData[3].innerText;
+        currentCourseObj.dates = courseData[4].innerText;
       }
     });
 
