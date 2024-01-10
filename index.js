@@ -1,5 +1,9 @@
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-console */
+/* eslint-disable no-continue */
 /* eslint-disable no-undef */
 const puppeteer = require("puppeteer");
+const fs = require("fs");
 const setSearchOptions = require("./setSearchOptions");
 const scrapeDetails = require("./scrapeDetails");
 
@@ -21,25 +25,59 @@ const URL =
   "%2fpsc%2fcsprpr9pub%2f&PortalHostNode=SA&" +
   "NoCrumbs=yes&PortalKeyStruct=yes";
 
+async function saveToFile(data, subjectCode) {
+  const dir = "./courses";
+
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir);
+  }
+
+  const json = JSON.stringify(data, null, 2);
+
+  fs.writeFileSync(`${dir}/${subjectCode}.json`, json, "utf-8");
+}
+
 async function main() {
   const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
 
-  await page.goto(URL);
-  await setSearchOptions(page, "ITI", 1);
+  const courses = ["ADM", "ITI", "MAT", "CSI"];
 
-  let searchSuccessful = true;
-  try {
-    await page.waitForSelector(".SSSMSGALERTFRAMEWBO", { timeout: 2000 });
-    searchSuccessful = false;
-  } catch (err) {}
+  for (let i = 0; i < courses.length; i += 1) {
+    const courseDetails = [];
+    for (let j = 1; j < 6; j += 1) {
+      await page.goto(URL);
+      await setSearchOptions(page, courses[i], j);
 
-  if (searchSuccessful) {
-    const data = await scrapeDetails(page);
-    console.log(data);
-  } else {
-    console.log("No classess found");
+      let searchSuccessful = true;
+      try {
+        await page.waitForSelector(".SSSMSGALERTFRAMEWBO", { timeout: 2000 });
+        searchSuccessful = false;
+        console.log("No results");
+        continue;
+      } catch (err) {
+        console.log(`Attempting Search for ${courses[i]} Year: ${j}`);
+      }
+
+      try {
+        await page.waitForSelector(".SSSTEXTBLUE", { timeout: 5000 });
+      } catch (err) {
+        console.log(`Excceed search results for: ${courses[i]}`);
+        continue;
+      }
+
+      if (searchSuccessful) {
+        const data = await scrapeDetails(page);
+        courseDetails.push(...data);
+      } else {
+        console.log("No classess found");
+      }
+    }
+    await saveToFile(courseDetails, courses[i]);
+    console.log("Data saved to file");
   }
+
+  browser.close();
 }
 
 main();
