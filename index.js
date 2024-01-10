@@ -3,9 +3,22 @@
 /* eslint-disable no-continue */
 /* eslint-disable no-undef */
 const puppeteer = require("puppeteer");
+const dotenv = require("dotenv");
+const mongoose = require("mongoose");
+
+const Course = require("./courseModel");
 const setSearchOptions = require("./setSearchOptions");
 const scrapeDetails = require("./scrapeDetails");
 const saveToFile = require("./saveToFile");
+
+dotenv.config({ path: "./config.env" });
+let DB = process.env.DATABASE.replace(
+  "<USERNAME>",
+  process.env.DATABASE_USERNAME,
+);
+DB = DB.replace("<PASSWORD>", process.env.DATABASE_PASSWORD);
+
+mongoose.connect(DB).then(() => console.log("DB Connected"));
 
 const URL =
   "https://uocampus.public.uottawa.ca/" +
@@ -29,11 +42,13 @@ async function main() {
   const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
 
-  const courses = ["ADM", "ITI", "MAT", "CSI"];
+  // const courses = ["ADM", "ITI", "MAT", "CSI"];
+  const courses = ["ITI"];
+  const yearMax = 2;
 
   for (let i = 0; i < courses.length; i += 1) {
     const courseDetails = [];
-    for (let j = 1; j < 6; j += 1) {
+    for (let j = 1; j < yearMax; j += 1) {
       await page.goto(URL);
       await setSearchOptions(page, courses[i], j);
 
@@ -61,11 +76,12 @@ async function main() {
         console.log("No classess found");
       }
     }
-    await saveToFile(courseDetails, courses[i]);
-    console.log("Data saved to file");
+    await Course.create(courseDetails);
+    console.log("Course saved to database");
   }
 
   browser.close();
+  process.exit();
 }
 
 main();

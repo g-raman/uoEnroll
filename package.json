@@ -9,6 +9,8 @@
   "author": "Raman Gupta",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.3.1",
+    "mongoose": "^8.0.4",
     "puppeteer": "^21.6.1"
   },
   "devDependencies": {
