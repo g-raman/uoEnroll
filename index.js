@@ -171,23 +171,20 @@ async function main() {
   const page = await browser.newPage();
 
   await page.goto(URL);
-  await setSearchOptions(page, "ADM", 2);
+  await setSearchOptions(page, "ITI", 1);
 
-  let isSearchSuccessful = true;
+  let searchSuccessful = true;
   try {
-    await page.waitForSelector(".SSSTEXTBLUE", { timeout: 7000 });
-  } catch (err) {
-    isSearchSuccessful = false;
-  }
+    await page.waitForSelector(".SSSMSGALERTFRAMEWBO", { timeout: 2000 });
+    searchSuccessful = false;
+  } catch (err) {}
 
-  if (!isSearchSuccessful) {
-    console.log("Error when fetching results...");
+  if (searchSuccessful) {
+    const data = await scrapeDetails(page);
+    console.log(data);
   } else {
-    console.log("Success!");
+    console.log("No classess found");
   }
-
-  const data = await scrapeDetails(page);
-  console.log(data);
 }
 
 main();
