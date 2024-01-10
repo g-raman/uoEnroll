@@ -19,6 +19,48 @@ const URL =
   "%2fpsc%2fcsprpr9pub%2f&PortalHostNode=SA&" +
   "NoCrumbs=yes&PortalKeyStruct=yes";
 
+async function attachHelperFunctios(page) {
+  await page.evaluate(() => {
+    window.createCourse = (courseElement) => {
+      const courseInfo = courseElement.innerText;
+      let [courseCode, courseName] = courseInfo.split(" - ");
+      courseCode = courseCode.trim().replace(/ /g, "");
+      courseName = courseName.trim();
+
+      return { courseCode, courseName };
+    };
+  });
+
+  await page.evaluate(() => {
+    window.createComponent = (courseElement) => {
+      const courseDataSelector = ".PSLEVEL3GRIDODDROW";
+      const courseData = Array.from(
+        courseElement.querySelectorAll(courseDataSelector),
+      );
+
+      const sectionData = courseData[1].innerText;
+
+      const [componentInfo, sessionType] = sectionData.split("\n");
+      const [section, componentType] = componentInfo.split("-");
+
+      const statusImage = courseData[5].querySelector("img").src;
+      const status = statusImage.match(/CLOSED/) || statusImage.match(/OPEN/);
+
+      const component = {
+        section,
+        componentType,
+        sessionType,
+        timings: courseData[2].innerText,
+        instructor: courseData[3].innerText,
+        dates: courseData[4].innerText,
+        status: status[0],
+      };
+
+      return component;
+    };
+  });
+}
+
 async function setSearchOptions(page, code, yearNum) {
   await page.evaluate(
     (subjectCode, year) => {
@@ -61,12 +103,91 @@ async function setSearchOptions(page, code, yearNum) {
   );
 }
 
+async function scrapeDetails(page) {
+  await attachHelperFunctios(page);
+  const data = await page.evaluate(() => {
+    const tableSelector = "ACE_$ICField$4$$0";
+    const courseListSelector =
+      "tbody > tr [valign=center], .PAGROUPBOXLABELLEVEL1";
+    const table = document.getElementById(tableSelector);
+    const courses = Array.from(table.querySelectorAll(courseListSelector));
+
+    const results = [];
+    let currentCourseObj = {};
+    let currentSectionObj = {};
+    let newCourseCreated = true;
+    const cond = courses.length;
+
+    for (let index = 0; index < cond; index += 1) {
+      const el = courses[index];
+      const newCourseRegex = /PAGROUPBOXLABELLEVEL1/;
+      const shouldCreateNewClass = newCourseRegex.test(el.className);
+
+      if (shouldCreateNewClass) {
+        const newCourse = window.createCourse(el);
+        currentCourseObj = { ...newCourse, sections: [] };
+        currentSectionObj = { components: [] };
+        newCourseCreated = true;
+      } else {
+        const componentObj = window.createComponent(el);
+        const { section } = componentObj;
+
+        const sectionRegex = /[A-Z]00/;
+        if (newCourseCreated) {
+          currentSectionObj.section = section;
+        }
+
+        if (sectionRegex.test(section) && !newCourseCreated) {
+          currentCourseObj.sections.push(currentSectionObj);
+          currentSectionObj = { section, components: [] };
+          currentSectionObj.components.push(componentObj);
+        } else {
+          currentSectionObj.components.push(componentObj);
+          newCourseCreated = false;
+        }
+
+        if (
+          index < cond - 1 &&
+          newCourseRegex.test(courses[index + 1].className)
+        ) {
+          currentCourseObj.sections.push(currentSectionObj);
+          results.push(currentCourseObj);
+        }
+
+        if (index === cond - 1) {
+          currentCourseObj.sections.push(currentSectionObj);
+          results.push(currentCourseObj);
+        }
+      }
+    }
+
+    return results;
+  });
+  return data;
+}
+
 async function main() {
   const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
 
   await page.goto(URL);
   await setSearchOptions(page, "ADM", 2);
+
+  let isSearchSuccessful = true;
+  try {
+    await page.waitForSelector(".SSSTEXTBLUE", { timeout: 7000 });
+  } catch (err) {
+    isSearchSuccessful = false;
+  }
+
+  if (!isSearchSuccessful) {
+    console.log("Error when fetching results...");
+  } else {
+    console.log("Success!");
+  }
+
+  const data = await scrapeDetails(page);
+  console.log(data);
 }
 
 main();
