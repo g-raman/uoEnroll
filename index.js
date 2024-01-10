@@ -3,9 +3,9 @@
 /* eslint-disable no-continue */
 /* eslint-disable no-undef */
 const puppeteer = require("puppeteer");
-const fs = require("fs");
 const setSearchOptions = require("./setSearchOptions");
 const scrapeDetails = require("./scrapeDetails");
+const saveToFile = require("./saveToFile");
 
 const URL =
   "https://uocampus.public.uottawa.ca/" +
@@ -24,18 +24,6 @@ const URL =
   "PortalURI=https%3a%2f%2fuocampus.public.uottawa.ca" +
   "%2fpsc%2fcsprpr9pub%2f&PortalHostNode=SA&" +
   "NoCrumbs=yes&PortalKeyStruct=yes";
-
-async function saveToFile(data, subjectCode) {
-  const dir = "./courses";
-
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir);
-  }
-
-  const json = JSON.stringify(data, null, 2);
-
-  fs.writeFileSync(`${dir}/${subjectCode}.json`, json, "utf-8");
-}
 
 async function main() {
   const browser = await puppeteer.launch({ headless: false });
