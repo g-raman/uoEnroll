@@ -1,9 +1,13 @@
 /* eslint-disable no-await-in-loop */
+/* eslint-disable no-console */
+/* eslint-disable no-continue */
 /* eslint-disable no-undef */
 const puppeteer = require("puppeteer");
-const fs = require("fs");
+const setSearchOptions = require("./setSearchOptions");
+const scrapeDetails = require("./scrapeDetails");
+const saveToFile = require("./saveToFile");
 
-const url =
+const URL =
   "https://uocampus.public.uottawa.ca/" +
   "psc/csprpr9pub/EMPLOYEE/SA/c/" +
   "UO_SR_AA_MODS.UO_PUB_CLSSRCH.GBL?" +
@@ -22,198 +26,43 @@ const url =
   "NoCrumbs=yes&PortalKeyStruct=yes";
 
 async function main() {
-  const browser = await puppeteer.launch({ headless: "new" });
+  const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
 
-  await page.goto(url);
+  const courses = ["ADM", "ITI", "MAT", "CSI"];
 
-  // const toSearch = ["ADM", "ITI", "MAT", "SEG"];
-  const toSearch = ["ADM"];
+  for (let i = 0; i < courses.length; i += 1) {
+    const courseDetails = [];
+    for (let j = 1; j < 6; j += 1) {
+      await page.goto(URL);
+      await setSearchOptions(page, courses[i], j);
 
-  for (let j = 0; j < toSearch.length; j += 1) {
-    for (let i = 1; i <= 5; i += 1) {
-      // Attach util methods to window object
-      await page.evaluate(() => {
-        // Wrapper function for getElementById for concise code
-        window.findById = (elemId) => document.getElementById(elemId);
-
-        window.exists = (elemId) => Boolean(window.findById(elemId));
-      });
-
-      // Attach search course method to window object
-      await page.evaluate(() => {
-        window.selectCourseSearchOptions = (subjectCode, year) => {
-          const subjectCodeFieldSelector = "SSR_CLSRCH_WRK_SUBJECT$0";
-          const courseCodeFieldSelector = "SSR_CLSRCH_WRK_CATALOG_NBR$0";
-          const courseCodeFilterSelector = "SSR_CLSRCH_WRK_SSR_EXACT_MATCH1$0";
-          const showClosedCourseSelector = "SSR_CLSRCH_WRK_SSR_OPEN_ONLY$chk$0";
-          let yearSelector = `UO_PUB_SRCH_WRK_SSR_RPTCK_OPT_0${year}$chk$0`;
-          yearSelector =
-            year < 5 ? yearSelector : "UO_PUB_SRCH_WRK_GRADUATED_TBL_CD$chk$0";
-          const submitBtnSelector = "CLASS_SRCH_WRK2_SSR_PB_CLASS_SRCH";
-
-          const subjectCodeField = window.findById(subjectCodeFieldSelector);
-          subjectCodeField.value = subjectCode;
-
-          const courseCodeField = window.findById(courseCodeFieldSelector);
-          courseCodeField.value = "0";
-
-          const courseCodeFilterField = window.findById(
-            courseCodeFilterSelector,
-          );
-          courseCodeFilterField.value = "G";
-
-          const showClosedCourseField = window.findById(
-            showClosedCourseSelector,
-          );
-          showClosedCourseField.value = "N";
-
-          const yearField = window.findById(yearSelector);
-          yearField.value = "Y";
-
-          const submitButton = window.findById(submitBtnSelector);
-          submitButton.click();
-        };
-      });
-
-      // Attach helper scraping methods to window object
-      await page.evaluate(() => {
-        window.createNewCourse = (courseElement) => {
-          const courseInfo = courseElement.innerText;
-          let [courseCode, courseName] = courseInfo.split(" - ");
-          courseCode = courseCode.trim().replace(/ /g, "");
-          courseName = courseName.trim();
-
-          return { courseCode, courseName };
-        };
-
-        window.createNewComponent = (courseElement) => {
-          const courseDataSelector = ".PSLEVEL3GRIDODDROW";
-          const courseData = Array.from(
-            courseElement.querySelectorAll(courseDataSelector),
-          );
-
-          const sectionData = courseData[1].innerText;
-
-          const [componentInfo, sessionType] = sectionData.split("\n");
-          const [section, componentType] = componentInfo.split("-");
-
-          const statusImage = courseData[5].querySelector("img").src;
-          const status =
-            statusImage.match(/CLOSED/) || statusImage.match(/OPEN/);
-
-          const component = {
-            section,
-            componentType,
-            sessionType,
-            timings: courseData[2].innerText,
-            instructor: courseData[3].innerText,
-            dates: courseData[4].innerText,
-            status: status[0],
-          };
-
-          return component;
-        };
-      });
-
-      // Attach scraper method to window object
-      await page.evaluate(() => {
-        window.scrapeCourseDetails = () => {
-          const tableSelector = "ACE_$ICField$4$$0";
-          const courseListSelector =
-            "tbody > tr [valign=center], .PAGROUPBOXLABELLEVEL1";
-          const table = window.findById(tableSelector);
-          const courses = Array.from(
-            table.querySelectorAll(courseListSelector),
-          );
-
-          const results = [];
-          let currentCourseObj = {};
-          let currentSectionObj = {};
-          let newCourseCreated = true;
-          const cond = courses.length;
-
-          for (let index = 0; index < cond; index += 1) {
-            const el = courses[index];
-            const newCourseRegex = /PAGROUPBOXLABELLEVEL1/;
-            const shouldCreateNewClass = newCourseRegex.test(el.className);
-
-            if (shouldCreateNewClass) {
-              const newCourse = window.createNewCourse(el);
-              currentCourseObj = { ...newCourse, sections: [] };
-              currentSectionObj = { components: [] };
-              newCourseCreated = true;
-            } else {
-              const componentObj = window.createNewComponent(el);
-              const { section } = componentObj;
-
-              const sectionRegex = /[A-Z]00/;
-              if (newCourseCreated) {
-                currentSectionObj.section = section;
-              }
-
-              if (sectionRegex.test(section) && !newCourseCreated) {
-                currentCourseObj.sections.push(currentSectionObj);
-                currentSectionObj = { section, components: [] };
-                currentSectionObj.components.push(componentObj);
-              } else {
-                currentSectionObj.components.push(componentObj);
-                newCourseCreated = false;
-              }
-
-              if (
-                index < cond - 1 &&
-                newCourseRegex.test(courses[index + 1].className)
-              ) {
-                currentCourseObj.sections.push(currentSectionObj);
-                results.push(currentCourseObj);
-              }
-
-              if (index === cond - 1) {
-                currentCourseObj.sections.push(currentSectionObj);
-                results.push(currentCourseObj);
-              }
-            }
-          }
-
-          return results;
-        };
-      });
-
-      // Search for course
-      const currentCourse = toSearch[j];
-      console.log(`Searching year ${i} courses for: ${currentCourse}`);
-      await page.evaluate(
-        (course, index) => {
-          window.selectCourseSearchOptions(course, index);
-        },
-        currentCourse,
-        i,
-      );
-
-      let isSearchSuccessful = true;
+      let searchSuccessful = true;
       try {
-        await page.waitForSelector(".SSSTEXTBLUE", { timeout: 7000 });
-      } catch (err) {
-        isSearchSuccessful = false;
-      }
-
-      if (!isSearchSuccessful) {
-        console.log("Error when fetching results...");
+        await page.waitForSelector(".SSSMSGALERTFRAMEWBO", { timeout: 2000 });
+        searchSuccessful = false;
+        console.log("No results");
         continue;
-      } else {
-        console.log("Success!");
+      } catch (err) {
+        console.log(`Attempting Search for ${courses[i]} Year: ${j}`);
       }
 
-      const data = await page.evaluate(() => window.scrapeCourseDetails());
+      try {
+        await page.waitForSelector(".SSSTEXTBLUE", { timeout: 5000 });
+      } catch (err) {
+        console.log(`Excceed search results for: ${courses[i]}`);
+        continue;
+      }
 
-      fs.writeFileSync(
-        `./courses/${currentCourse}.json`,
-        JSON.stringify(data, null, 2),
-        "utf-8",
-      );
-      await page.goto(url);
+      if (searchSuccessful) {
+        const data = await scrapeDetails(page);
+        courseDetails.push(...data);
+      } else {
+        console.log("No classess found");
+      }
     }
+    await saveToFile(courseDetails, courses[i]);
+    console.log("Data saved to file");
   }
 
   browser.close();
