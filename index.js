@@ -9,7 +9,7 @@ const mongoose = require("mongoose");
 const Course = require("./courseModel");
 const setSearchOptions = require("./setSearchOptions");
 const scrapeDetails = require("./scrapeDetails");
-const saveToFile = require("./saveToFile");
+const { Lecture, Dgd } = require("./componentModel");
 
 dotenv.config({ path: "./config.env" });
 let DB = process.env.DATABASE.replace(
@@ -79,6 +79,12 @@ async function main() {
     await Course.create(courseDetails);
     console.log("Course saved to database");
   }
+
+  await Dgd.create({
+    section: "test 2",
+    timings: "test 2",
+    status: "test 2",
+  });
 
   browser.close();
   process.exit();
