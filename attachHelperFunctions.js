@@ -1,4 +1,4 @@
-async function attachHelperFunctios(page) {
+async function attachHelperFunctions(page) {
   await page.evaluate(() => {
     window.createCourse = (courseElement) => {
       const courseInfo = courseElement.innerText;
@@ -40,4 +40,4 @@ async function attachHelperFunctios(page) {
   });
 }
 
-module.exports = attachHelperFunctios;
+module.exports = attachHelperFunctions;
