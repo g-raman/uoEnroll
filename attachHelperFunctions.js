@@ -23,7 +23,9 @@ async function attachHelperFunctions(page) {
       const [section, componentType] = componentInfo.split("-");
 
       const statusImage = courseData[5].querySelector("img").src;
-      const status = statusImage.match(/CLOSED/) || statusImage.match(/OPEN/);
+      const statusString =
+        statusImage.match(/CLOSED/) || statusImage.match(/OPEN/);
+      const isOpen = statusString[0] === "OPEN";
 
       const component = {
         section,
@@ -32,7 +34,7 @@ async function attachHelperFunctions(page) {
         timings: courseData[2].innerText,
         instructor: courseData[3].innerText,
         dates: courseData[4].innerText,
-        status: status[0],
+        isOpen,
       };
 
       return component;

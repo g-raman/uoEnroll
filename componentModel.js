@@ -10,12 +10,13 @@ const componentSchema = new mongoose.Schema({
   status: {
     type: String,
   },
+  isOpen: Boolean,
 });
 
-const Lecture = mongoose.model("lecture", componentSchema);
-const Lab = mongoose.model("lab", componentSchema);
-const Dgd = mongoose.model("dgd", componentSchema);
-const Tutorial = mongoose.model("tutorials", componentSchema);
+const Lecture = mongoose.model("Lecture", componentSchema);
+const Lab = mongoose.model("Lab", componentSchema);
+const Dgd = mongoose.model("Dgd", componentSchema);
+const Tutorial = mongoose.model("Tutorials", componentSchema);
 
 exports.Lecture = Lecture;
 exports.Lab = Lab;
