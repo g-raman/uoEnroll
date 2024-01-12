@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 
 const sectionSchema = new mongoose.Schema({
+  _id: {
+    type: mongoose.Schema.Types.ObjectId,
+  },
   section: {
     type: String,
   },

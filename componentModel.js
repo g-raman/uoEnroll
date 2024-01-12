@@ -1,10 +1,19 @@
 const mongoose = require("mongoose");
 
 const componentSchema = new mongoose.Schema({
+  _id: {
+    type: mongoose.Schema.Types.ObjectId,
+  },
   section: {
     type: String,
   },
   timings: {
+    type: String,
+  },
+  instructor: {
+    type: String,
+  },
+  dates: {
     type: String,
   },
   status: {

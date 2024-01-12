@@ -9,7 +9,8 @@ const mongoose = require("mongoose");
 const Course = require("./courseModel");
 const setSearchOptions = require("./setSearchOptions");
 const scrapeDetails = require("./scrapeDetails");
-const { Lecture, Dgd } = require("./componentModel");
+const { Lecture, Lab, Dgd, Tutorial } = require("./componentModel");
+const Section = require("./sectionModel");
 
 dotenv.config({ path: "./config.env" });
 let DB = process.env.DATABASE.replace(
@@ -37,6 +38,34 @@ const URL =
   "PortalURI=https%3a%2f%2fuocampus.public.uottawa.ca" +
   "%2fpsc%2fcsprpr9pub%2f&PortalHostNode=SA&" +
   "NoCrumbs=yes&PortalKeyStruct=yes";
+
+function processDetails(details) {
+  details[0].sections.forEach(async (item) => {
+    // const id = new mongoose.Types.ObjectId().toHexString();
+    // item._id = id;
+    // await Section.create(item);
+
+    // console.log(item);
+
+    item.components.forEach(async (el) => {
+      const componentId = new mongoose.Types.ObjectId().toHexString();
+      el._id = componentId;
+
+      if (el.componentType === "LEC") {
+        // console.log(el);
+        await Lecture.create(el);
+      } else if (el.componentType === "LAB") {
+        await Lab.create(el);
+      } else if (el.componentType === "DGD") {
+        await Dgd.create(el);
+      } else if (el.componentType === "TUT") {
+        await Tutorial.create(el);
+      }
+    });
+  });
+
+  console.log("Courses added");
+}
 
 async function main() {
   const browser = await puppeteer.launch({ headless: false });
@@ -76,18 +105,15 @@ async function main() {
         console.log("No classess found");
       }
     }
-    await Course.create(courseDetails);
-    console.log("Course saved to database");
+
+    processDetails(courseDetails);
+
+    // await Course.create(courseDetails);
+    // console.log("Course saved to database");
   }
 
-  await Dgd.create({
-    section: "test 2",
-    timings: "test 2",
-    status: "test 2",
-  });
-
-  browser.close();
-  process.exit();
+  // browser.close();
+  // process.exit();
 }
 
 main();

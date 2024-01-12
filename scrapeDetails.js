@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+
 const attachHelperFunctions = require("./attachHelperFunctions");
 
 async function scrapeDetails(page) {
