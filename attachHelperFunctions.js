@@ -22,6 +22,14 @@ async function attachHelperFunctions(page) {
       const [componentInfo, sessionType] = sectionData.split("\n");
       const [section, componentType] = componentInfo.split("-");
 
+      const [startDate, endDate] = courseData[4].innerText
+        .split("\n")[0]
+        .split(" - ");
+
+      const instructor = courseData[3].innerText.split("\n")[0];
+
+      const timings = courseData[2].innerText.split("\n");
+
       const statusImage = courseData[5].querySelector("img").src;
       const statusString =
         statusImage.match(/CLOSED/) || statusImage.match(/OPEN/);
@@ -31,9 +39,10 @@ async function attachHelperFunctions(page) {
         section,
         componentType,
         sessionType,
-        timings: courseData[2].innerText,
-        instructor: courseData[3].innerText,
-        dates: courseData[4].innerText,
+        instructor,
+        timings,
+        startDate,
+        endDate,
         isOpen,
       };
 

@@ -52,7 +52,6 @@ function processDetails(details) {
       el._id = componentId;
 
       if (el.componentType === "LEC") {
-        // console.log(el);
         await Lecture.create(el);
       } else if (el.componentType === "LAB") {
         await Lab.create(el);

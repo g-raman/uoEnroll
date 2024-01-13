@@ -7,14 +7,17 @@ const componentSchema = new mongoose.Schema({
   section: {
     type: String,
   },
-  timings: {
-    type: String,
-  },
   instructor: {
     type: String,
   },
-  dates: {
-    type: String,
+  timings: {
+    type: [String],
+  },
+  startDate: {
+    type: Date,
+  },
+  endDate: {
+    type: Date,
   },
   status: {
     type: String,
