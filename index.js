@@ -39,43 +39,52 @@ const URL =
   "%2fpsc%2fcsprpr9pub%2f&PortalHostNode=SA&" +
   "NoCrumbs=yes&PortalKeyStruct=yes";
 
-function processDetails(details) {
-  details[0].sections.forEach(async (item) => {
-    const sectionId = new mongoose.Types.ObjectId().toHexString();
-    // item._id = id;
-    // await Section.create(item);
-
-    const section = {
-      _id: sectionId,
-      section: item.section,
-      labs: [],
-      dgds: [],
-      tutorials: [],
+async function processDetails(details) {
+  for (let x = 0; x < details.length; x += 1) {
+    const currCourse = details[x];
+    const course = {
+      courseCode: currCourse.courseCode,
+      courseName: currCourse.courseName,
+      sections: [],
     };
 
-    // await item.components.forEach(async (el) => {
-    for (let j = 0; j < item.components.length; j += 1) {
-      const el = item.components[j];
-      const componentId = new mongoose.Types.ObjectId().toHexString();
-      el._id = componentId;
+    for (let i = 0; i < currCourse.sections.length; i += 1) {
+      const item = currCourse.sections[i];
+      const sectionId = new mongoose.Types.ObjectId().toHexString();
 
-      if (el.componentType === "LEC") {
-        await Lecture.create(el);
-        section.lecture = componentId;
-      } else if (el.componentType === "LAB") {
-        await Lab.create(el);
-        section.labs.push(componentId);
-      } else if (el.componentType === "DGD") {
-        await Dgd.create(el);
-        section.dgds.push(componentId);
-      } else if (el.componentType === "TUT") {
-        await Tutorial.create(el);
-        section.tutorials.push(componentId);
+      const section = {
+        _id: sectionId,
+        section: item.section,
+        labs: [],
+        dgds: [],
+        tutorials: [],
+      };
+
+      for (let j = 0; j < item.components.length; j += 1) {
+        const el = item.components[j];
+        const componentId = new mongoose.Types.ObjectId().toHexString();
+        el._id = componentId;
+
+        if (el.componentType === "LEC") {
+          await Lecture.create(el);
+          section.lecture = componentId;
+        } else if (el.componentType === "LAB") {
+          await Lab.create(el);
+          section.labs.push(componentId);
+        } else if (el.componentType === "DGD") {
+          await Dgd.create(el);
+          section.dgds.push(componentId);
+        } else if (el.componentType === "TUT") {
+          await Tutorial.create(el);
+          section.tutorials.push(componentId);
+        }
       }
-    }
 
-    await Section.create(section);
-  });
+      course.sections.push(sectionId);
+      await Section.create(section);
+    }
+    await Course.create(course);
+  }
 
   console.log("Courses added");
 }
