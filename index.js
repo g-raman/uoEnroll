@@ -41,26 +41,40 @@ const URL =
 
 function processDetails(details) {
   details[0].sections.forEach(async (item) => {
-    // const id = new mongoose.Types.ObjectId().toHexString();
+    const sectionId = new mongoose.Types.ObjectId().toHexString();
     // item._id = id;
     // await Section.create(item);
 
-    // console.log(item);
+    const section = {
+      _id: sectionId,
+      section: item.section,
+      labs: [],
+      dgds: [],
+      tutorials: [],
+    };
 
-    item.components.forEach(async (el) => {
+    // await item.components.forEach(async (el) => {
+    for (let j = 0; j < item.components.length; j += 1) {
+      const el = item.components[j];
       const componentId = new mongoose.Types.ObjectId().toHexString();
       el._id = componentId;
 
       if (el.componentType === "LEC") {
         await Lecture.create(el);
+        section.lecture = componentId;
       } else if (el.componentType === "LAB") {
         await Lab.create(el);
+        section.labs.push(componentId);
       } else if (el.componentType === "DGD") {
         await Dgd.create(el);
+        section.dgds.push(componentId);
       } else if (el.componentType === "TUT") {
         await Tutorial.create(el);
+        section.tutorials.push(componentId);
       }
-    });
+    }
+
+    await Section.create(section);
   });
 
   console.log("Courses added");
