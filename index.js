@@ -5,12 +5,15 @@
 const puppeteer = require("puppeteer");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
+const fs = require("fs");
 
 const Course = require("./courseModel");
 const setSearchOptions = require("./setSearchOptions");
 const scrapeDetails = require("./scrapeDetails");
 const { Lecture, Lab, Dgd, Tutorial } = require("./componentModel");
 const Section = require("./sectionModel");
+
+const courses = JSON.parse(fs.readFileSync("courseCodes.json", "utf-8"));
 
 dotenv.config({ path: "./config.env" });
 let DB = process.env.DATABASE.replace(
@@ -95,8 +98,6 @@ async function main() {
   const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
 
-  // const courses = ["ADM", "ITI", "MAT", "CSI"];
-  const courses = ["MAT"];
   const yearMax = 6;
 
   for (let i = 0; i < courses.length; i += 1) {
