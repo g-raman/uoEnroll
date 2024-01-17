@@ -65,6 +65,8 @@ async function processDetails(details) {
         const componentId = new mongoose.Types.ObjectId().toHexString();
         el._id = componentId;
 
+        if (el.startDate === "-") continue;
+
         if (el.componentType === "LEC") {
           await Lecture.create(el);
           section.lecture = componentId;
@@ -86,7 +88,7 @@ async function processDetails(details) {
     await Course.create(course);
   }
 
-  console.log("Courses added");
+  console.log("Courses added\n");
 }
 
 async function main() {
@@ -94,8 +96,8 @@ async function main() {
   const page = await browser.newPage();
 
   // const courses = ["ADM", "ITI", "MAT", "CSI"];
-  const courses = ["ITI"];
-  const yearMax = 2;
+  const courses = ["MAT"];
+  const yearMax = 6;
 
   for (let i = 0; i < courses.length; i += 1) {
     const courseDetails = [];
@@ -128,7 +130,8 @@ async function main() {
       }
     }
 
-    processDetails(courseDetails);
+    console.log("Saving results to database");
+    await processDetails(courseDetails);
 
     // await Course.create(courseDetails);
     // console.log("Course saved to database");
