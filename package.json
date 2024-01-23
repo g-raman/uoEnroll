@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
-  "scripts": {},
+  "scripts": {
+    "start": "NODE_ENV=development nodemon server.js"
+  },
   "devDependencies": {
     "eslint": "^8.56.0",
     "eslint-config-airbnb": "^19.0.4",
