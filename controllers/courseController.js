@@ -2,6 +2,7 @@ const Course = require("../models/courseModel");
 const Section = require("../models/sectionModel");
 const Component = require("../models/componentModel");
 const catchAsync = require("../utils/catchAsync");
+const AppError = require("../utils/AppError");
 
 exports.getCourse = catchAsync(async (req, res, next) => {
   const data = await Course.findOne({
@@ -14,6 +15,8 @@ exports.getCourse = catchAsync(async (req, res, next) => {
       select: "-_id -__v",
     },
   });
+
+  if (!data) throw new AppError("No Course with that course code.");
 
   res.status(200).json({
     status: "success",
