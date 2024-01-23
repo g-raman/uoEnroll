@@ -1,13 +1,7 @@
 const express = require("express");
+const courseController = require("../controllers/courseController");
 
 const router = express.Router();
 
-router.route("/").get((req, res, next) => {
-  res.status(200).json({
-    status: "success",
-    message: "hi",
-  });
-  next();
-});
-
+router.route("/:courseCode").get(courseController.getCourse);
 module.exports = router;

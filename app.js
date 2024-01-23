@@ -9,11 +9,5 @@ if (process.env.NODE_ENV === "development") {
 }
 
 app.use("/api/v1/courses", courseRoute);
-app.get("/", (req, res, next) => {
-  res.status(200).json({
-    status: "success",
-    message: "hi",
-  });
-});
 
 module.exports = app;
