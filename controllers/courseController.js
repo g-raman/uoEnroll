@@ -16,7 +16,7 @@ exports.getCourse = catchAsync(async (req, res, next) => {
     },
   });
 
-  if (!data) throw new AppError("No Course with that course code.");
+  if (!data) throw new AppError("No Course with that course code.", 404);
 
   res.status(200).json({
     status: "success",
