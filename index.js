@@ -107,13 +107,14 @@ async function main() {
       await setSearchOptions(page, courses[i], j);
 
       let searchSuccessful = true;
+      console.log(`Attempting Search for ${courses[i]} Year: ${j}`);
       try {
         await page.waitForSelector(".SSSMSGALERTFRAMEWBO", { timeout: 2000 });
         searchSuccessful = false;
         console.log("No results");
         continue;
       } catch (err) {
-        console.log(`Attempting Search for ${courses[i]} Year: ${j}`);
+        console.log(`Waiting for results`);
       }
 
       try {
