@@ -1,5 +1,6 @@
 import CalendarDay from './components/CalendarDay';
 import DayNavigation from './components/DayNavigation';
+import SearchBar from './components/SearchBar';
 
 function App() {
   return (
@@ -9,7 +10,9 @@ function App() {
         <CalendarDay />
       </div>
 
-      <div className="h-[35%] w-full rounded-t-xl bg-[#f1f1f1]"></div>
+      <div className="h-[35%] w-full rounded-t-xl bg-[#f1f1f1] p-6">
+        <SearchBar />
+      </div>
     </div>
   );
 }
