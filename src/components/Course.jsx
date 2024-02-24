@@ -1,6 +1,6 @@
 const Course = () => {
   return (
-    <div className="flex h-full w-full flex-col overflow-hidden rounded-md text-sm">
+    <div className="flex h-min w-full flex-col overflow-hidden rounded-md text-sm">
       <div className="flex h-min w-full gap-4 bg-lime-300 p-2 text-base">
         <input type="checkbox" />
         <span>ITI 1100: Raman Gupta</span>
