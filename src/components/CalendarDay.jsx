@@ -1,6 +1,6 @@
 const CalendarDay = () => {
   return (
-    <div className="flex h-[60%] w-full flex-col overflow-scroll px-4 py-12">
+    <div className="flex h-full w-full flex-col overflow-scroll py-12">
       {Array.from({ length: 12 }).map((_, i) => {
         return (
           <div className="flex w-full justify-between" key={i}>
