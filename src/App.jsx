@@ -1,4 +1,5 @@
 import CalendarDay from './components/CalendarDay';
+import Course from './components/Course';
 import DayNavigation from './components/DayNavigation';
 import SearchBar from './components/SearchBar';
 
@@ -10,8 +11,9 @@ function App() {
         <CalendarDay />
       </div>
 
-      <div className="h-[35%] w-full rounded-t-xl bg-[#f1f1f1] p-6">
+      <div className="flex h-[35%] w-full flex-col gap-4 rounded-t-xl bg-[#f1f1f1] p-6">
         <SearchBar />
+        <Course />
       </div>
     </div>
   );
