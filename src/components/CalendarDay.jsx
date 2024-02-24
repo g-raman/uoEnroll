@@ -1,6 +1,8 @@
-const CalendarDay = () => {
+const CalendarDay = ({ className = '' }) => {
   return (
-    <div className="flex h-full w-full flex-col overflow-scroll py-12">
+    <div
+      className={`flex h-full w-full flex-col overflow-scroll py-12 ${className}`}
+    >
       {Array.from({ length: 18 }).map((_, i) => {
         let hour = i + 6;
         const amOrPm = hour < 12 ? 'AM' : 'PM';
