@@ -7,7 +7,7 @@ const DayNavigation = ({ selectedDay, onSelectDay }) => {
       {DAYS.map((day, i) => {
         return (
           <span
-            className={`grid h-8 w-8 place-items-center rounded-md transition delay-0 duration-300 ease-in ${selectedDay === i ? active : ''}`}
+            className={`grid h-8 w-8 place-items-center rounded-md transition-[background-color] delay-0 duration-300 ease-out ${selectedDay === i ? active : ''}`}
             onClick={() => onSelectDay(i)}
             key={i}
           >
