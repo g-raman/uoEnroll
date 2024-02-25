@@ -1,3 +1,5 @@
+import CourseSection from './CourseSection';
+
 const Course = ({ course }) => {
   return (
     <div className="flex h-min w-full flex-col overflow-clip rounded-md text-sm">
@@ -9,14 +11,7 @@ const Course = ({ course }) => {
       </div>
 
       {course.sections.map((section, i) => {
-        return (
-          <>
-            <div key={i} className="flex h-min w-full gap-4 bg-gray-200 p-2">
-              <input type="checkbox" />
-              <span>Section {section.section}</span>
-            </div>
-          </>
-        );
+        return <CourseSection key={i} section={section} />;
       })}
 
       <div className="flex h-min w-full gap-4 bg-white px-2">
