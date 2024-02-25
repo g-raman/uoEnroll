@@ -23,9 +23,7 @@ const Course = ({ course }) => {
 
       {course.sections.map((section, i) => {
         return (
-          <div key={i} className={isOpen ? '' : 'hidden'}>
-            <CourseSection section={section} />
-          </div>
+          <CourseSection key={i} isSectionOpen={isOpen} section={section} />
         );
       })}
     </div>

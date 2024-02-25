@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import CourseComponent from './CourseComponent';
 
-const CourseSection = ({ section }) => {
+const CourseSection = ({ isSectionOpen, section }) => {
   const [isOpen, setIsOpen] = useState(true);
 
   return (
-    <>
+    <div className={isSectionOpen ? '' : 'hidden'}>
       <div className="flex h-min w-full gap-4 bg-gray-200 p-2">
         <input type="checkbox" />
         <span>Section {section.section}</span>
@@ -32,7 +32,7 @@ const CourseSection = ({ section }) => {
           return <CourseComponent key={i} type="TUT" component={lab} />;
         })}
       </div>
-    </>
+    </div>
   );
 };
 
