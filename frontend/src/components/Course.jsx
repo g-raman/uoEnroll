@@ -23,7 +23,7 @@ const Course = ({ course }) => {
 
       {course.sections.map((section, i) => {
         return (
-          <CourseSection key={i} isSectionOpen={isOpen} section={section} />
+          <CourseSection key={i} isCourseOpen={isOpen} section={section} />
         );
       })}
     </div>

@@ -1,23 +1,27 @@
 import { useState } from 'react';
 import CourseComponent from './CourseComponent';
 
-const CourseSection = ({ isSectionOpen, section }) => {
-  const [isOpen, setIsOpen] = useState(true);
+const CourseSection = ({ isCourseOpen, section }) => {
+  const [isSectionOpen, setIsSectionOpen] = useState(true);
 
   return (
-    <div className={isSectionOpen ? '' : 'hidden'}>
+    <div
+      className={`transition-all delay-100 ease-in ${isCourseOpen ? 'opacity-1 visible h-full' : 'invisible h-0 opacity-0'}`}
+    >
       <div className="flex h-min w-full gap-4 bg-gray-200 p-2">
         <input type="checkbox" />
         <span>Section {section.section}</span>
         <span
-          onClick={() => setIsOpen((is) => !is)}
+          onClick={() => setIsSectionOpen((is) => !is)}
           className="flex-grow cursor-pointer px-2 text-end"
         >
-          {isOpen ? '^' : '<'}
+          {isSectionOpen ? '^' : '<'}
         </span>
       </div>
 
-      <div className={isOpen ? 'space-y-[2px]' : 'hidden'}>
+      <div
+        className={`space-y-[2px] transition-all ease-in ${isSectionOpen ? 'opacity-1 visible h-full' : 'invisible h-0 opacity-0'}`}
+      >
         <CourseComponent type="LEC" component={section.lecture} />
 
         {section.labs.map((lab, i) => {
