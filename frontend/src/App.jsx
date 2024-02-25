@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import CalendarDay from './components/CalendarDay';
 import Course from './components/Course';
 import DayNavigation from './components/DayNavigation';
 import SearchBar from './components/SearchBar';
+import useFetch from './hooks/useFetch';
 
 const testCourse1 = {
   startHour: 8,
@@ -30,18 +31,8 @@ function App() {
     [],
   ]);
 
-  const [searchResults, setSearchResults] = useState([]);
-
-  useEffect(function () {
-    async function getCourse() {
-      const res = await fetch('http://localhost:8080/api/v1/courses/ITI1100');
-      const data = await res.json();
-      setSearchResults((results) => [...results, data.data]);
-    }
-    getCourse();
-  }, []);
-
-  console.log(searchResults);
+  const [query, setQuery] = useState('');
+  const { data: searchResults, isLoading, error } = useFetch(query);
 
   function handleSelectDay(index) {
     setSelectedDay(index);
@@ -68,7 +59,7 @@ function App() {
       </div>
 
       <div className="flex h-[35%] w-full flex-col gap-4 overflow-scroll rounded-t-xl bg-[#f1f1f1] p-6">
-        <SearchBar />
+        <SearchBar setQuery={setQuery} />
         {searchResults.map((result, i) => {
           return <Course course={result} key={i} />;
         })}
