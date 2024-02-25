@@ -25,21 +25,6 @@ const Course = ({ course }) => {
         return (
           <div key={i} className={isOpen ? '' : 'hidden'}>
             <CourseSection section={section} />
-            <div className="space-y-[2px]">
-              <CourseComponent type="LEC" component={section.lecture} />
-
-              {section.labs.map((lab, i) => {
-                return <CourseComponent key={i} type="LAB" component={lab} />;
-              })}
-
-              {section.dgds.map((lab, i) => {
-                return <CourseComponent key={i} type="DGD" component={lab} />;
-              })}
-
-              {section.tutorials.map((lab, i) => {
-                return <CourseComponent key={i} type="TUT" component={lab} />;
-              })}
-            </div>
           </div>
         );
       })}
