@@ -5,8 +5,31 @@ import Course from './components/Course';
 import DayNavigation from './components/DayNavigation';
 import SearchBar from './components/SearchBar';
 
+const testCourse1 = {
+  startHour: 8,
+  startMin: 30,
+  endHour: 9,
+  endMin: 50,
+};
+
+const testCourse2 = {
+  startHour: 13,
+  startMin: 0,
+  endHour: 14,
+  endMin: 20,
+};
+
 function App() {
   const [selectedDay, setSelectedDay] = useState(0);
+  const [calendarItems, setCalendarItems] = useState([
+    [testCourse1],
+    [testCourse2],
+    [],
+    [],
+    [],
+    [],
+    [],
+  ]);
 
   function handleSelectDay(index) {
     setSelectedDay(index);
@@ -24,6 +47,7 @@ function App() {
             return (
               <CalendarDay
                 key={i}
+                items={calendarItems[i]}
                 className={`${selectedDay === i ? '' : 'hidden'}`}
               />
             );

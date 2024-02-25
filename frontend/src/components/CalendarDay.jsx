@@ -1,15 +1,6 @@
-const CalendarDay = ({ className = '', children }) => {
-  const HOUR_HEIGHT = 6;
-  const startHour = 8;
-  const startMin = 0;
+import CalendarItem from './CalendarItem';
 
-  const endHour = 9;
-  const endMin = 50;
-
-  const duration = endHour - startHour + Math.abs(endMin - startMin) / 60;
-  const size = `${duration * HOUR_HEIGHT}rem`;
-  const courseStart = `${(startHour - 6) * HOUR_HEIGHT + 3 + (startMin / 60) * HOUR_HEIGHT}rem`;
-
+const CalendarDay = ({ items, className = '' }) => {
   return (
     <div
       className={`relative flex h-full w-full flex-col overflow-scroll py-12 ${className}`}
@@ -28,7 +19,18 @@ const CalendarDay = ({ className = '', children }) => {
           </div>
         );
       })}
-      {children}
+
+      {items.map((item, i) => {
+        return (
+          <CalendarItem
+            key={i}
+            startHour={item.startHour}
+            startMin={item.startMin}
+            endHour={item.endHour}
+            endMin={item.endMin}
+          />
+        );
+      })}
     </div>
   );
 };
