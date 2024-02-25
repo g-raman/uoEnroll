@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import CalendarDay from './components/CalendarDay';
-import CalendarItem from './components/CalendarItem';
 import Course from './components/Course';
 import DayNavigation from './components/DayNavigation';
 import SearchBar from './components/SearchBar';
