@@ -8,7 +8,6 @@ const Course = ({ course }) => {
   return (
     <div className="flex h-min w-full flex-col overflow-clip rounded-md text-sm">
       <div className="flex h-min w-full gap-4 bg-lime-300 p-2 text-base">
-        <input type="checkbox" />
         <span className="overflow-hidden overflow-ellipsis whitespace-nowrap">
           {course.courseCode}: {course.courseName}
         </span>
