@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import CourseComponent from './CourseComponent';
 import CourseSection from './CourseSection';
 
 const Course = ({ course }) => {
