@@ -36,19 +36,23 @@ function useFetch(course) {
           dispatch({ type: 'reset' });
           return;
         }
-        const res = await fetch(BASE_URL + course);
-        const data = await res.json();
 
-        if (data.status === 'failed') throw new Error('No course found');
-        dispatch({ type: 'load-data', payload: data.data });
+        try {
+          const res = await fetch(BASE_URL + course);
+          const data = await res.json();
+
+          if (data?.status === 'fail') {
+            throw new Error(data.message);
+          }
+
+          dispatch({ type: 'load-data', payload: data.data });
+        } catch (error) {
+          dispatch({ type: 'error', payload: error.message });
+        }
       }
 
-      try {
-        dispatch({ type: 'send-request' });
-        getData();
-      } catch (error) {
-        dispatch({ type: 'error', payload: error.error });
-      }
+      dispatch({ type: 'send-request' });
+      getData();
     },
     [course],
   );
