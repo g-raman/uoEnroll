@@ -3,7 +3,7 @@ const DayNavigation = ({ selectedDay, onSelectDay }) => {
   const active = 'text-white bg-[#822B2B]';
 
   return (
-    <div className="mb-2 flex w-full cursor-pointer justify-between">
+    <div className="flex w-full cursor-pointer justify-between">
       {DAYS.map((day, i) => {
         return (
           <span
