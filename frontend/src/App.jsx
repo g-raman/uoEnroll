@@ -69,9 +69,9 @@ function App() {
 
       <div className="flex h-[35%] w-full flex-col gap-4 overflow-scroll rounded-t-xl bg-[#f1f1f1] p-6">
         <SearchBar />
-        <Course />
-        <Course />
-        <Course />
+        {searchResults.map((result, i) => {
+          return <Course course={result} key={i} />;
+        })}
       </div>
     </div>
   );
