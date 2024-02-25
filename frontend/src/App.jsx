@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import CalendarDay from './components/CalendarDay';
 import Course from './components/Course';
 import DayNavigation from './components/DayNavigation';
@@ -29,6 +29,19 @@ function App() {
     [],
     [],
   ]);
+
+  const [searchResults, setSearchResults] = useState([]);
+
+  useEffect(function () {
+    async function getCourse() {
+      const res = await fetch('http://localhost:8080/api/v1/courses/ITI1100');
+      const data = await res.json();
+      setSearchResults((results) => [...results, data.data]);
+    }
+    getCourse();
+  }, []);
+
+  console.log(searchResults);
 
   function handleSelectDay(index) {
     setSelectedDay(index);
