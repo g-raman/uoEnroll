@@ -28,13 +28,6 @@ const CalendarDay = ({ className = '', children }) => {
           </div>
         );
       })}
-
-      <div
-        className="absolute left-14 w-[82%] rounded-md bg-red-100 p-3 text-red-900"
-        style={{ top: courseStart, height: size }}
-      >
-        test
-      </div>
       {children}
     </div>
   );

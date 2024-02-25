@@ -1,4 +1,5 @@
 import CalendarDay from './components/CalendarDay';
+import CalendarItem from './components/CalendarItem';
 import Course from './components/Course';
 import DayNavigation from './components/DayNavigation';
 import SearchBar from './components/SearchBar';
@@ -9,7 +10,9 @@ function App() {
       <div className="h-[60%] w-dvw rounded-b-xl bg-[#f1f1f1] px-8 py-8 font-poppins font-light text-gray-400">
         <DayNavigation />
         <div className="h-full">
-          <CalendarDay />
+          <CalendarDay>
+            <CalendarItem startHour={8} startMin={30} endHour={9} endMin={50} />
+          </CalendarDay>
           <CalendarDay className="hidden" />
           <CalendarDay className="hidden" />
           <CalendarDay className="hidden" />
