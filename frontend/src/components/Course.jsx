@@ -1,3 +1,4 @@
+import CourseComponent from './CourseComponent';
 import CourseSection from './CourseSection';
 
 const Course = ({ course }) => {
@@ -11,23 +12,27 @@ const Course = ({ course }) => {
       </div>
 
       {course.sections.map((section, i) => {
-        return <CourseSection key={i} section={section} />;
+        return (
+          <div key={i}>
+            <CourseSection section={section} />
+            <div className="space-y-[2px]">
+              <CourseComponent type="LEC" component={section.lecture} />
+
+              {section.labs.map((lab, i) => {
+                return <CourseComponent key={i} type="LAB" component={lab} />;
+              })}
+
+              {section.dgds.map((lab, i) => {
+                return <CourseComponent key={i} type="DGD" component={lab} />;
+              })}
+
+              {section.tutorials.map((lab, i) => {
+                return <CourseComponent key={i} type="TUT" component={lab} />;
+              })}
+            </div>
+          </div>
+        );
       })}
-
-      <div className="flex h-min w-full gap-4 bg-white px-2">
-        <input type="checkbox" />
-        <div className="flex-grow-1 flex w-[60%] flex-col gap-1 py-2 font-thin">
-          <span>
-            <b>A00</b> Raman Gupta
-          </span>
-          <span>Tue 8:30 - 9:20</span>
-          <span>Wed 1:00 - 2:20</span>
-        </div>
-
-        <span className="grid h-full flex-grow place-items-center border-l-2 border-l-gray-300 font-semibold">
-          LEC
-        </span>
-      </div>
     </div>
   );
 };
