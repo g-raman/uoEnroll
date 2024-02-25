@@ -12,10 +12,10 @@ const SearchBar = ({ setQuery }) => {
   return (
     <form className="flex gap-3" onSubmit={(e) => handleSubmit(e)}>
       <input
-        className="w-full rounded-md p-2 font-poppins text-sm font-light italic"
+        className="w-full rounded-md p-2 font-poppins text-xs font-normal"
         placeholder="Search for a class like CSI 2110..."
         value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
+        onChange={(e) => setInputValue(e.target.value.toUpperCase())}
       />
       <button className="rounded-md bg-sky-400 px-4">Submit</button>
     </form>
