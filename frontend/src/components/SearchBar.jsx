@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import searchIcon from '../assets/magnifyingGlass.svg';
 import trashIcon from '../assets/trash.svg';
+import Loader from './Loader';
 
-const SearchBar = ({ setQuery }) => {
+const SearchBar = ({ isLoading, setQuery }) => {
   const [inputValue, setInputValue] = useState('');
 
   function handleSubmit(event) {
@@ -40,8 +41,15 @@ const SearchBar = ({ setQuery }) => {
         <img className="h-6 w-6 stroke-white" src={trashIcon} />
       </button>
 
-      <button className="rounded-md bg-[#822B2B] px-2 text-white">
-        <img className="h-6 w-6 stroke-white" src={searchIcon} />
+      <button
+        disabled={isLoading}
+        className={`rounded-md bg-[#822b2b] px-2 text-white ${isLoading ? 'opacity-75' : ''}`}
+      >
+        {isLoading ? (
+          <Loader height="1rem" width="1rem" />
+        ) : (
+          <img className="h-6 w-6 stroke-white" src={searchIcon} />
+        )}
       </button>
     </form>
   );
