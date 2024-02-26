@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import chevronDown from '../assets/chevron-down.svg';
 import CourseComponent from './CourseComponent';
 
 const CourseSection = ({
@@ -20,7 +21,10 @@ const CourseSection = ({
           onClick={() => setIsSectionOpen((is) => !is)}
           className="flex-grow cursor-pointer px-2 text-end"
         >
-          {isSectionOpen ? '^' : '<'}
+          <img
+            className={`transition-all ease-in ${isSectionOpen ? 'rotate-0' : 'rotate-90'} h-full`}
+            src={chevronDown}
+          />
         </span>
       </div>
 
