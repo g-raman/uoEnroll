@@ -12,7 +12,7 @@ function reducer(state, { type, payload }) {
       return { ...state, isLoading: true };
 
     case 'load-data':
-      return { ...state, data: [...state.data, payload], isLoading: false };
+      return { ...state, data: [payload, ...state.data], isLoading: false };
 
     case 'error':
       return { ...initialState, data: state.data, error: payload };
