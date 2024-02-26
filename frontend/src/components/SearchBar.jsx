@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import searchIcon from '../assets/magnifyingGlass.svg';
 
 const SearchBar = ({ setQuery }) => {
   const [inputValue, setInputValue] = useState('');
@@ -17,7 +18,9 @@ const SearchBar = ({ setQuery }) => {
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value.toUpperCase())}
       />
-      <button className="rounded-md bg-sky-400 px-4">Submit</button>
+      <button className="rounded-md bg-[#822B2B] px-2 text-white">
+        <img className="h-6 w-6 stroke-white" src={searchIcon} />
+      </button>
     </form>
   );
 };
