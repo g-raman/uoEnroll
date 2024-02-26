@@ -15,7 +15,6 @@ const CourseSection = ({
       className={`transition-all delay-100 ease-in ${isCourseOpen ? 'opacity-1 visible h-full' : 'invisible h-0 opacity-0'}`}
     >
       <div className="flex h-min w-full gap-4 bg-gray-200 p-2">
-        <input type="checkbox" />
         <span>Section {section.section}</span>
         <span
           onClick={() => setIsSectionOpen((is) => !is)}
