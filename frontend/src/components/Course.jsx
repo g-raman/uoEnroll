@@ -13,7 +13,7 @@ const Course = ({ setCalendarItems, course }) => {
         </span>
 
         <span
-          className="flex-grow cursor-pointer px-2 text-end"
+          className="flex flex-grow cursor-pointer justify-end"
           onClick={() => setIsOpen((is) => !is)}
         >
           <img

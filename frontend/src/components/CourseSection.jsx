@@ -19,7 +19,7 @@ const CourseSection = ({
         <span>Section {section.section}</span>
         <span
           onClick={() => setIsSectionOpen((is) => !is)}
-          className="flex-grow cursor-pointer px-2 text-end"
+          className="flex flex-grow cursor-pointer justify-end text-end"
         >
           <img
             className={`transition-all ease-in ${isSectionOpen ? 'rotate-0' : 'rotate-90'} h-full`}
