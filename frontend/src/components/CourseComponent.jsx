@@ -18,7 +18,7 @@ const CourseComponent = ({ courseInfo, setCalendarItems, component, type }) => {
       if (!e.target.checked) {
         setCalendarItems((currCalendar) => {
           const newDay = currCalendar[dayIndex].filter((item) => {
-            return !item.id === id;
+            return !(item.id === id);
           });
 
           const newCalendar = currCalendar.map((day, i) => {
@@ -56,6 +56,7 @@ const CourseComponent = ({ courseInfo, setCalendarItems, component, type }) => {
             return day;
           });
 
+          console.log(newCalendar);
           return newCalendar;
         });
       }
