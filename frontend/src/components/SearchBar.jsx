@@ -16,10 +16,18 @@ const SearchBar = ({ setQuery }) => {
     setQuery('reset');
   }
 
+  function handleKeyDown(event) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      handleSubmit(event);
+    }
+  }
+
   return (
     <form className="flex gap-3" onSubmit={(e) => handleSubmit(e)}>
       <input
         className="w-full rounded-md p-2 font-poppins text-xs font-normal"
+        onKeyDown={(e) => handleKeyDown(e)}
         placeholder="Search for a class like CSI 2110..."
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value.toUpperCase())}
