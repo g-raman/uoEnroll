@@ -32,12 +32,10 @@ function useFetch(course) {
   useEffect(
     function () {
       async function getData() {
-        if (course === '') {
-          dispatch({ type: 'reset' });
-          return;
-        }
+        if (course === '') return;
 
         try {
+          dispatch({ type: 'send-request' });
           const res = await fetch(BASE_URL + course);
           const data = await res.json();
 
@@ -51,7 +49,6 @@ function useFetch(course) {
         }
       }
 
-      dispatch({ type: 'send-request' });
       getData();
     },
     [course],
