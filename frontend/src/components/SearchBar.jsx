@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import searchIcon from '../assets/magnifyingGlass.svg';
+import trashIcon from '../assets/trash.svg';
 
 const SearchBar = ({ setQuery }) => {
   const [inputValue, setInputValue] = useState('');
@@ -18,6 +19,11 @@ const SearchBar = ({ setQuery }) => {
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value.toUpperCase())}
       />
+
+      <button className="rounded-md border-[1px] border-black bg-gray-200 px-2">
+        <img className="h-6 w-6 stroke-white" src={trashIcon} />
+      </button>
+
       <button className="rounded-md bg-[#822B2B] px-2 text-white">
         <img className="h-6 w-6 stroke-white" src={searchIcon} />
       </button>
