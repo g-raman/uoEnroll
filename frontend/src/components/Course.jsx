@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import chevronLeft from '../assets/chevron-left.svg';
 import chevronDown from '../assets/chevron-down.svg';
 import CourseSection from './CourseSection';
 
@@ -17,11 +16,10 @@ const Course = ({ setCalendarItems, course }) => {
           className="flex-grow cursor-pointer px-2 text-end"
           onClick={() => setIsOpen((is) => !is)}
         >
-          {isOpen ? (
-            <img className="h-full" src={chevronDown} />
-          ) : (
-            <img className="h-full" src={chevronLeft} />
-          )}
+          <img
+            className={`h-full transition-all ease-in ${isOpen ? 'rotate-0' : 'rotate-90'}`}
+            src={chevronDown}
+          />
         </span>
       </div>
 
