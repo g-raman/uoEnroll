@@ -21,15 +21,7 @@ const CalendarDay = ({ items, className = '' }) => {
       })}
 
       {items.map((item, i) => {
-        return (
-          <CalendarItem
-            key={i}
-            startHour={item.startHour}
-            startMin={item.startMin}
-            endHour={item.endHour}
-            endMin={item.endMin}
-          />
-        );
+        return <CalendarItem key={i} details={item} />;
       })}
     </div>
   );

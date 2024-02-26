@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import CourseSection from './CourseSection';
 
-const Course = ({ course }) => {
+const Course = ({ setCalendarItems, course }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -21,7 +21,16 @@ const Course = ({ course }) => {
 
       {course.sections.map((section, i) => {
         return (
-          <CourseSection key={i} isCourseOpen={isOpen} section={section} />
+          <CourseSection
+            courseInfo={{
+              courseCode: course.courseCode,
+              courseName: course.courseName,
+            }}
+            setCalendarItems={setCalendarItems}
+            key={i}
+            isCourseOpen={isOpen}
+            section={section}
+          />
         );
       })}
     </div>

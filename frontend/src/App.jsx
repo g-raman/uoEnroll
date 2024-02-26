@@ -5,25 +5,11 @@ import DayNavigation from './components/DayNavigation';
 import SearchBar from './components/SearchBar';
 import useFetch from './hooks/useFetch';
 
-const testCourse1 = {
-  startHour: 8,
-  startMin: 30,
-  endHour: 9,
-  endMin: 50,
-};
-
-const testCourse2 = {
-  startHour: 13,
-  startMin: 0,
-  endHour: 14,
-  endMin: 20,
-};
-
 function App() {
   const [selectedDay, setSelectedDay] = useState(0);
   const [calendarItems, setCalendarItems] = useState([
-    [testCourse1],
-    [testCourse2],
+    [],
+    [],
     [],
     [],
     [],
@@ -61,7 +47,14 @@ function App() {
       <div className="flex h-[35%] w-full flex-col gap-4 overflow-scroll rounded-t-xl bg-[#f1f1f1] p-6">
         <SearchBar setQuery={setQuery} />
         {searchResults.map((result, i) => {
-          return <Course course={result} key={i} />;
+          return (
+            <Course
+              setCalendarItems={setCalendarItems}
+              calendar={calendarItems}
+              course={result}
+              key={i}
+            />
+          );
         })}
       </div>
     </div>

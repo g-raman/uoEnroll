@@ -1,7 +1,12 @@
 import { useState } from 'react';
 import CourseComponent from './CourseComponent';
 
-const CourseSection = ({ isCourseOpen, section }) => {
+const CourseSection = ({
+  courseInfo,
+  setCalendarItems,
+  isCourseOpen,
+  section,
+}) => {
   const [isSectionOpen, setIsSectionOpen] = useState(true);
 
   return (
@@ -22,18 +27,47 @@ const CourseSection = ({ isCourseOpen, section }) => {
       <div
         className={`space-y-[2px] transition-all ease-in ${isSectionOpen ? 'opacity-1 visible h-full' : 'invisible h-0 opacity-0'}`}
       >
-        <CourseComponent type="LEC" component={section.lecture} />
+        <CourseComponent
+          courseInfo={courseInfo}
+          setCalendarItems={setCalendarItems}
+          type="LEC"
+          component={section.lecture}
+        />
 
         {section.labs.map((lab, i) => {
-          return <CourseComponent key={i} type="LAB" component={lab} />;
+          return (
+            <CourseComponent
+              courseInfo={courseInfo}
+              setCalendarItems={setCalendarItems}
+              key={i}
+              type="LAB"
+              component={lab}
+            />
+          );
         })}
 
         {section.dgds.map((lab, i) => {
-          return <CourseComponent key={i} type="DGD" component={lab} />;
+          return (
+            <CourseComponent
+              courseInfo={courseInfo}
+              setCalendarItems={setCalendarItems}
+              key={i}
+              type="DGD"
+              component={lab}
+            />
+          );
         })}
 
         {section.tutorials.map((lab, i) => {
-          return <CourseComponent key={i} type="TUT" component={lab} />;
+          return (
+            <CourseComponent
+              courseCode={courseInfo}
+              setCalendarItems={setCalendarItems}
+              key={i}
+              type="TUT"
+              component={lab}
+            />
+          );
         })}
       </div>
     </div>

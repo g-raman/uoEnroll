@@ -1,4 +1,14 @@
-const CalendarItem = ({ startHour, startMin, endHour, endMin }) => {
+const CalendarItem = ({ details }) => {
+  const {
+    courseCode,
+    courseName,
+    section,
+    type,
+    startHour,
+    startMin,
+    endHour,
+    endMin,
+  } = details;
   const HOUR_HEIGHT = 6;
 
   const duration = endHour - startHour + Math.abs(endMin - startMin) / 60;
@@ -10,8 +20,10 @@ const CalendarItem = ({ startHour, startMin, endHour, endMin }) => {
       className="absolute left-14 w-[82%] rounded-md border-l-8 border-l-lime-400 bg-lime-100 p-3 text-lime-900"
       style={{ top: courseStart, height: size }}
     >
-      ITI 1100 <br />
-      Digital Science
+      {courseCode} [{section}] <br />
+      {courseName}
+      <br />
+      {type}
     </div>
   );
 };
