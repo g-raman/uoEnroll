@@ -34,6 +34,11 @@ function useFetch(course) {
       async function getData() {
         if (course === '') return;
 
+        if (course === 'reset') {
+          dispatch({ type: 'reset' });
+          return;
+        }
+
         try {
           dispatch({ type: 'send-request' });
           const res = await fetch(BASE_URL + course);

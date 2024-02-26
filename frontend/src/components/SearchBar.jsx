@@ -11,6 +11,11 @@ const SearchBar = ({ setQuery }) => {
     setQuery(query);
   }
 
+  function handleDelete() {
+    event.preventDefault();
+    setQuery('reset');
+  }
+
   return (
     <form className="flex gap-3" onSubmit={(e) => handleSubmit(e)}>
       <input
@@ -20,7 +25,10 @@ const SearchBar = ({ setQuery }) => {
         onChange={(e) => setInputValue(e.target.value.toUpperCase())}
       />
 
-      <button className="rounded-md border-[1px] border-black bg-gray-200 px-2">
+      <button
+        onClick={handleDelete}
+        className="rounded-md border-[1px] border-black bg-gray-200 px-2"
+      >
         <img className="h-6 w-6 stroke-white" src={trashIcon} />
       </button>
 
