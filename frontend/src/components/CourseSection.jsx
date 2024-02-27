@@ -64,7 +64,7 @@ const CourseSection = ({
         {section.tutorials.map((lab, i) => {
           return (
             <CourseComponent
-              courseCode={courseInfo}
+              courseInfo={courseInfo}
               setCalendarItems={setCalendarItems}
               key={i}
               type="TUT"
