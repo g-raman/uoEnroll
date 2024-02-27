@@ -3,7 +3,7 @@ import CalendarItem from './CalendarItem';
 const CalendarDay = ({ items, className = '' }) => {
   return (
     <div
-      className={`relative flex h-full w-full flex-col overflow-scroll py-12 ${className}`}
+      className={`no-scrollbar relative flex h-full w-full flex-col overflow-y-scroll py-12 ${className}`}
     >
       {Array.from({ length: 18 }).map((_, i) => {
         let hour = i + 6;
