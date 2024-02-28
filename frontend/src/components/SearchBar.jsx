@@ -10,6 +10,7 @@ const SearchBar = ({ isLoading, setQuery }) => {
     event.preventDefault();
     const query = inputValue.trim().replaceAll(' ', '').toUpperCase();
     setQuery(query);
+    setInputValue('');
   }
 
   function handleDelete() {

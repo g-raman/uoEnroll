@@ -17,6 +17,9 @@ function reducer(state, { type, payload }) {
     case 'error':
       return { ...initialState, data: state.data, error: payload };
 
+    case 'reset-error':
+      return { ...initialState, data: state.data, error: null };
+
     case 'reset':
       return initialState;
 
@@ -36,6 +39,11 @@ function useFetch(course) {
 
         if (course === 'reset') {
           dispatch({ type: 'reset' });
+          return;
+        }
+
+        if (course === 'reset-error') {
+          dispatch({ type: 'reset-error' });
           return;
         }
 
