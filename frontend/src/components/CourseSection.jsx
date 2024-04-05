@@ -12,7 +12,7 @@ const CourseSection = ({
 
   return (
     <div
-      className={`transition-all delay-100 ease-in ${isCourseOpen ? 'opacity-1 visible h-full' : 'invisible h-0 opacity-0'}`}
+      className={`transition-all delay-100 ease-in ${isCourseOpen ? 'opacity-1 visible h-full' : 'invisible hidden h-0 opacity-0'}`}
     >
       <div className="flex h-min w-full gap-4 bg-gray-200 p-2">
         <span>Section {section.section}</span>

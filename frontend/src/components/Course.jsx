@@ -6,7 +6,7 @@ const Course = ({ setCalendarItems, course }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="flex h-min w-full flex-col overflow-clip rounded-md text-sm">
+    <div className="flex h-min w-full flex-col rounded-md text-sm">
       <div className="flex h-min w-full gap-4 bg-lime-300 p-2 text-base">
         <span className="overflow-hidden overflow-ellipsis whitespace-nowrap">
           {course.courseCode}: {course.courseName}

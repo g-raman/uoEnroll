@@ -78,18 +78,21 @@ function App() {
           </div>
         </div>
 
-        <div className="flex h-[35%] w-full flex-col gap-4 overflow-scroll rounded-t-xl bg-[#f1f1f1] p-6">
+        <div className="flex h-[35%] w-full flex-col gap-4 rounded-t-xl bg-[#f1f1f1] p-6">
           <SearchBar isLoading={isLoading} setQuery={setQuery} />
-          {searchResults.map((result, i) => {
-            return (
-              <Course
-                setCalendarItems={setCalendarItems}
-                calendar={calendarItems}
-                course={result}
-                key={i}
-              />
-            );
-          })}
+
+          <div className="no-scrollbar flex h-min flex-col gap-4 overflow-y-scroll rounded-md">
+            {searchResults.map((result, i) => {
+              return (
+                <Course
+                  setCalendarItems={setCalendarItems}
+                  calendar={calendarItems}
+                  course={result}
+                  key={i}
+                />
+              );
+            })}
+          </div>
         </div>
       </div>
     </>
