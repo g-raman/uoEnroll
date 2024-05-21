@@ -20,7 +20,7 @@ const URL =
   "NoCrumbs=yes&PortalKeyStruct=yes";
 
 async function main() {
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch({ headless: "new" });
   const page = await browser.newPage();
 
   await page.goto(URL);
@@ -46,6 +46,8 @@ async function main() {
       });
   });
   saveToFile(results, "Terms");
+  browser.close();
+  process.exit();
 }
 
 main();
