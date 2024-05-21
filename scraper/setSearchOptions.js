@@ -1,6 +1,6 @@
-async function setSearchOptions(page, code, yearNum) {
+async function setSearchOptions(page, code, yearNum, term) {
   await page.evaluate(
-    (subjectCode, year) => {
+    (subjectCode, year, selectedTerm) => {
       const subjectCodeFieldSelector = "SSR_CLSRCH_WRK_SUBJECT$0";
       const courseCodeFieldSelector = "SSR_CLSRCH_WRK_CATALOG_NBR$0";
       const courseCodeFilterSelector = "SSR_CLSRCH_WRK_SSR_EXACT_MATCH1$0";
@@ -8,6 +8,16 @@ async function setSearchOptions(page, code, yearNum) {
       const yearSelector = `UO_PUB_SRCH_WRK_SSR_RPTCK_OPT_0${year}$chk$0`;
       const gradSelector = "UO_PUB_SRCH_WRK_GRADUATED_TBL_CD$chk$0";
       const yearFilterSelector = year < 5 ? yearSelector : gradSelector;
+      const termSelector = "CLASS_SRCH_WRK2_STRM$35$";
+
+      const termField = document.getElementById(termSelector);
+      Array.from(termField.options).forEach((item) => {
+        if (item.value !== selectedTerm.value) {
+          item.removeAttribute("selected");
+        } else {
+          item.setAttribute("selected", "selected");
+        }
+      });
 
       const submitBtnSelector = "CLASS_SRCH_WRK2_SSR_PB_CLASS_SRCH";
 
@@ -37,6 +47,7 @@ async function setSearchOptions(page, code, yearNum) {
     },
     code,
     yearNum,
+    term,
   );
 }
 

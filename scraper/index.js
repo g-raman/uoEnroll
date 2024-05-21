@@ -14,6 +14,7 @@ const { Lecture, Lab, Dgd, Tutorial } = require("./componentModel");
 const Section = require("./sectionModel");
 
 const courses = JSON.parse(fs.readFileSync("courseCodes.json", "utf-8"));
+const terms = JSON.parse(fs.readFileSync("./courses/Terms.json", "utf-8"));
 
 dotenv.config({ path: "./config.env" });
 let DB = process.env.DATABASE.replace(
@@ -21,8 +22,6 @@ let DB = process.env.DATABASE.replace(
   process.env.DATABASE_USERNAME,
 );
 DB = DB.replace("<PASSWORD>", process.env.DATABASE_PASSWORD);
-
-mongoose.connect(DB).then(() => console.log("DB Connected"));
 
 const URL =
   "https://uocampus.public.uottawa.ca/" +
@@ -99,44 +98,49 @@ async function main() {
   const page = await browser.newPage();
 
   const yearMax = 6;
+  for (let k = 0; k < terms.length; k += 1) {
+    const URI = DB.replace("<TERM>", terms[k].dbName);
+    await mongoose
+      .connect(URI)
+      .then(() => console.log(`Connected to ${terms[k].dbName}`));
 
-  for (let i = 0; i < courses.length; i += 1) {
-    const courseDetails = [];
-    for (let j = 1; j < yearMax; j += 1) {
-      await page.goto(URL);
-      await setSearchOptions(page, courses[i], j);
+    for (let i = 0; i < courses.length; i += 1) {
+      const courseDetails = [];
+      for (let j = 1; j < yearMax; j += 1) {
+        await page.goto(URL);
+        await setSearchOptions(page, courses[i], j, terms[k]);
 
-      let searchSuccessful = true;
-      console.log(`Attempting Search for ${courses[i]} Year: ${j}`);
-      try {
-        await page.waitForSelector(".SSSMSGALERTFRAMEWBO", { timeout: 2000 });
-        searchSuccessful = false;
-        console.log("No results");
-        continue;
-      } catch (err) {
-        console.log(`Waiting for results`);
+        let searchSuccessful = true;
+        console.log(`Attempting Search for ${courses[i]} Year: ${j}`);
+        try {
+          await page.waitForSelector(".SSSMSGALERTFRAMEWBO", { timeout: 2000 });
+          searchSuccessful = false;
+          console.log("No results");
+          continue;
+        } catch (err) {
+          console.log(`Waiting for results`);
+        }
+
+        try {
+          await page.waitForSelector(".SSSTEXTBLUE", { timeout: 5000 });
+        } catch (err) {
+          console.log(`Excceed search results for: ${courses[i]}`);
+          continue;
+        }
+
+        if (searchSuccessful) {
+          const data = await scrapeDetails(page);
+          courseDetails.push(...data);
+        } else {
+          console.log("No classess found");
+        }
       }
 
-      try {
-        await page.waitForSelector(".SSSTEXTBLUE", { timeout: 5000 });
-      } catch (err) {
-        console.log(`Excceed search results for: ${courses[i]}`);
-        continue;
-      }
+      console.log("Saving results to database");
+      await processDetails(courseDetails);
 
-      if (searchSuccessful) {
-        const data = await scrapeDetails(page);
-        courseDetails.push(...data);
-      } else {
-        console.log("No classess found");
-      }
+      mongoose.connection.close();
     }
-
-    console.log("Saving results to database");
-    await processDetails(courseDetails);
-
-    // await Course.create(courseDetails);
-    // console.log("Course saved to database");
   }
 
   // browser.close();
